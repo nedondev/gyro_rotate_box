@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="shortcut icon" href='/static/hand-cursor.png'>
+	<title>Nedondev Glove</title>
+	<link rel="stylesheet" href="css/main.css">
+	<script src="/static/socket.io.js"></script>
+	<script>
+	console.log("Test");
+	var socket = io.connect();
+	console.log(socket)
+	socket.on('connect', function(data){
+		console.log("Connection established: ", data);
+		socket.emit('ping_client', data);
+	})
+	socket.on('message', function(data){
+		console.log("meaage from server: ", data);
+		socket.emit('ping_client', data);
+	})
+	</script>
+</head>
+<body>
+</body>
+</html>
