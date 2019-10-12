@@ -4,6 +4,9 @@ import uvicorn
 import json
 import settings
 
+import readSensor as rs
+import time
+
 static_file = {
             '/': 'index.html',
             '/static': './static',
@@ -17,8 +20,16 @@ def my_event(sid, data):
     pass
 
 @sio.on('message')
-def another_event(sid, data):
-    print('message_event')
+async def another_event(sid, data):
+    #print('message_event from: ', sid)
+    #print('data: ', data)
+    if data['get'] == 'data':
+        try:
+            data = rs.read_filtered_out()
+            await send_information(sid,json.dumps(data))
+        except TypeError:
+            time.sleep(1.5)
+            rs.initial_sensor_module()
     pass
 
 @sio.on('ping_client')
@@ -42,5 +53,9 @@ async def send_information(sid, data):
     pass
 
 if __name__ == '__main__':
+    #initial for read MPU6050 via I2C
+    rs.initial_sensor_module()
+
     uvicorn.run(app, host=settings.IP_ADDRESS, port=settings.PORT)
     pass
+
